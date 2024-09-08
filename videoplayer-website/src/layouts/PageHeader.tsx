@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Menu, Upload, Bell, User, Mic, Search, ArrowLeft } from "lucide-react";
 import LuLuTube from "../assets/images/LuLuTube.png";
 import { Button } from "../components/Button";
-import { useSideBarContext } from "../contexts/SideBarContext";
+import { useSidebarContext } from "../contexts/SidebarContext";
 
 export const PageHeader = () => {
   const [showFullWidthSearch, setShowFullWidthSearch] = useState(false);
@@ -89,7 +89,7 @@ type PageHeaderFirstSectionProps = {
 export const PageHeaderFirstSection = ({
   hidden = false,
 }: PageHeaderFirstSectionProps) => {
-  const { toggle } = useSideBarContext();
+  const { toggle } = useSidebarContext();
   return (
     <div
       className={`gap-4 items-center flex-shrink-0 ${

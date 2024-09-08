@@ -1,16 +1,16 @@
 import { useState } from "react";
-import CategoryPills from "../components/CategoryPills";
+import { CategoryPills } from "../components/CategoryPills";
 import { categories, videos } from "../data/home";
 import { PageHeader } from "../layouts/PageHeader";
-import VideoGridItem from "../components/VideoGridItem";
+import { VideoGridItem } from "../components/VideoGridItem";
 import SideBar from "../layouts/SideBar";
-import SideBarProvider from "../contexts/SideBarContext";
+import { SidebarProvider } from "../contexts/SidebarContext";
 
 const HomePage = () => {
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
 
   return (
-    <SideBarProvider>
+    <SidebarProvider>
       <div className="max-h-screem flex flex-col">
         <PageHeader />
         <div className="grid grid-cols-[auto,1fr] flex-grow-l overflow-auto">
@@ -33,7 +33,7 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-    </SideBarProvider>
+    </SidebarProvider>
   );
 };
 

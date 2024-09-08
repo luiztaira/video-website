@@ -1,31 +1,32 @@
 import {
   ReactNode,
   createContext,
-  useState,
   useContext,
   useEffect,
+  useState,
 } from "react";
 
-type SideBarProviderProps = {
+type SidebarProviderProps = {
   children: ReactNode;
 };
 
-type SideBarContextType = {
+type SidebarContextType = {
   isLargeOpen: boolean;
   isSmallOpen: boolean;
   toggle: () => void;
   close: () => void;
 };
 
-const SideBarContext = createContext<SideBarContextType | null>(null);
+const SidebarContext = createContext<SidebarContextType | null>(null);
 
-export const useSideBarContext = () => {
-  const value = useContext(SideBarContext);
-  if (value === null) throw Error("Cannot use outside of SideBarProvider");
+export function useSidebarContext() {
+  const value = useContext(SidebarContext);
+  if (value == null) throw Error("Cannot use outside of SidebarProvider");
+
   return value;
-};
+}
 
-const SideBarProvider = ({ children }: SideBarProviderProps) => {
+export function SidebarProvider({ children }: SidebarProviderProps) {
   const [isLargeOpen, setIsLargeOpen] = useState(true);
   const [isSmallOpen, setIsSmallOpen] = useState(false);
 
@@ -41,28 +42,36 @@ const SideBarProvider = ({ children }: SideBarProviderProps) => {
     };
   }, []);
 
-  const isScreenSmall = () => {
+  function isScreenSmall() {
     return window.innerWidth < 1024;
-  };
+  }
 
-  const toggle = () => {
-    isScreenSmall()
-      ? setIsSmallOpen(!isSmallOpen)
-      : setIsLargeOpen(!isLargeOpen);
-  };
+  function toggle() {
+    if (isScreenSmall()) {
+      setIsSmallOpen((s) => !s);
+    } else {
+      setIsLargeOpen((l) => !l);
+    }
+  }
 
-  const close = () => {
-    setIsLargeOpen(false);
-    setIsSmallOpen(false);
-  };
+  function close() {
+    if (isScreenSmall()) {
+      setIsSmallOpen(false);
+    } else {
+      setIsLargeOpen(false);
+    }
+  }
 
   return (
-    <SideBarContext.Provider
-      value={{ isLargeOpen, isSmallOpen, toggle, close }}
+    <SidebarContext.Provider
+      value={{
+        isLargeOpen,
+        isSmallOpen,
+        toggle,
+        close,
+      }}
     >
       {children}
-    </SideBarContext.Provider>
+    </SidebarContext.Provider>
   );
-};
-
-export default SideBarProvider;
+}

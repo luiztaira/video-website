@@ -1,4 +1,5 @@
 import { ElementType, ReactNode, Children, useState } from "react";
+import { useLocation, Link } from "react-router-dom";
 import {
   Home,
   Library,
@@ -22,11 +23,10 @@ import {
   Gamepad2,
   Shirt,
 } from "lucide-react";
-import { Link } from "react-router-dom";
 import { Button, buttonStyles } from "../components/Button";
 import { twMerge } from "tailwind-merge";
 import { subscriptions, playlists } from "../data/sidebar";
-import { useSideBarContext } from "../contexts/SideBarContext";
+import { useSidebarContext } from "../contexts/SidebarContext";
 import { PageHeaderFirstSection } from "./PageHeader";
 
 const SmallSideBarItem = ({ Icon, title, url }: SmallSideBarItemProps) => {
@@ -97,12 +97,12 @@ const LargeSideBarItem = ({
     <Link
       to={url}
       className={twMerge(
-        buttonStyles({
-          variant: "ghost",
-        }),
-        `w-full flex items-center rounded-lg gap-4 p-3 ${
-          isActive ? "font-bold bg-neutral-100 hover:bg-secondary" : undefined
-        }`
+        isActive
+          ? "font-bold bg-neutral-100 hover:bg-secondary"
+          : buttonStyles({
+              variant: "ghost",
+            }),
+        "w-full flex items-center rounded-lg gap-4 p-3"
       )}
     >
       {typeof IconOrImgUrl === "string" ? (
@@ -125,7 +125,8 @@ type LargeSideBarItemProps = {
 };
 
 const SideBar = () => {
-  const { isLargeOpen, isSmallOpen, close } = useSideBarContext();
+  const { isLargeOpen, isSmallOpen, close } = useSidebarContext();
+  const location = useLocation(); // Get the current location
 
   return (
     <>
@@ -159,9 +160,14 @@ const SideBar = () => {
           <PageHeaderFirstSection />
         </div>
         <LargeSideBarSection visibleItemCount={1}>
-          <LargeSideBarItem isActive IconOrImgUrl={Home} title="Home" url="/" />
           <LargeSideBarItem
-            isActive
+            isActive={location.pathname === "/"} // Set active if URL matches
+            IconOrImgUrl={Home}
+            title="Home"
+            url="/"
+          />
+          <LargeSideBarItem
+            isActive={location.pathname === "/subscriptions"}
             IconOrImgUrl={Clapperboard}
             title="Subscriptions"
             url="/subscriptions"
@@ -170,25 +176,25 @@ const SideBar = () => {
         <hr />
         <LargeSideBarSection visibleItemCount={5}>
           <LargeSideBarItem
-            isActive
+            isActive={location.pathname === "/library"}
             IconOrImgUrl={Library}
             title="Library"
             url="/library"
           />
           <LargeSideBarItem
-            isActive
+            isActive={location.pathname === "/history"}
             IconOrImgUrl={History}
             title="History"
             url="/history"
           />
           <LargeSideBarItem
-            isActive
+            isActive={location.pathname === "/your-videos"}
             IconOrImgUrl={PlaySquare}
             title="Your Videos"
             url="/your-videos"
           />
           <LargeSideBarItem
-            isActive
+            isActive={location.pathname === "/playlist?list=WL"}
             IconOrImgUrl={Clock}
             title="Watch Later"
             url="/playlist?list=WL"
@@ -199,6 +205,7 @@ const SideBar = () => {
               title={playlist.name}
               IconOrImgUrl={ListVideo}
               url={`/playlist?list=${playlist.id}`}
+              isActive={location.pathname === `/playlist?list=${playlist.id}`}
             />
           ))}
         </LargeSideBarSection>
@@ -206,11 +213,11 @@ const SideBar = () => {
         <LargeSideBarSection title="Subscriptions">
           {subscriptions.map((subscription) => (
             <LargeSideBarItem
-              isActive
               key={subscription.id}
               IconOrImgUrl={subscription.imgUrl}
               title={subscription.channelName}
               url={`/@${subscription.id}`}
+              isActive={location.pathname === `/@${subscription.id}`}
             />
           ))}
         </LargeSideBarSection>
@@ -220,44 +227,55 @@ const SideBar = () => {
             IconOrImgUrl={Flame}
             title="Trending"
             url="/trending"
+            isActive={location.pathname === "/trending"}
           />
           <LargeSideBarItem
             IconOrImgUrl={ShoppingBag}
             title="Shopping"
             url="/shopping"
+            isActive={location.pathname === "/shopping"}
           />
-          <LargeSideBarItem IconOrImgUrl={Music2} title="Music" url="/music" />
+          <LargeSideBarItem
+            IconOrImgUrl={Music2}
+            title="Music"
+            url="/music"
+            isActive={location.pathname === "/music"}
+          />
           <LargeSideBarItem
             IconOrImgUrl={Film}
             title="Movies & TV"
             url="/movies-tv"
+            isActive={location.pathname === "/movies-tv"}
           />
-          <LargeSideBarItem IconOrImgUrl={Radio} title="Live" url="/live" />
+          <LargeSideBarItem
+            IconOrImgUrl={Radio}
+            title="Live"
+            url="/live"
+            isActive={location.pathname === "/live"}
+          />
           <LargeSideBarItem
             IconOrImgUrl={Gamepad2}
             title="Gaming"
             url="/gaming"
+            isActive={location.pathname === "/gaming"}
           />
-          <LargeSideBarItem IconOrImgUrl={Newspaper} title="News" url="/news" />
           <LargeSideBarItem
-            IconOrImgUrl={Trophy}
-            title="Sports"
-            url="/sports"
+            IconOrImgUrl={Newspaper}
+            title="News"
+            url="/news"
+            isActive={location.pathname === "/news"}
           />
           <LargeSideBarItem
             IconOrImgUrl={Lightbulb}
             title="Learning"
             url="/learning"
-          />
-          <LargeSideBarItem
-            IconOrImgUrl={Shirt}
-            title="Fashion & Beauty"
-            url="/fashion-beauty"
+            isActive={location.pathname === "/learning"}
           />
           <LargeSideBarItem
             IconOrImgUrl={Podcast}
             title="Podcasts"
             url="/podcasts"
+            isActive={location.pathname === "/podcasts"}
           />
         </LargeSideBarSection>
       </aside>
